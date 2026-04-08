@@ -1,0 +1,27 @@
+{
+  "user" : [
+    {
+      "id": 1,
+      "name": "minh",
+      "email": "minhhg@gmail.com",
+      "password":"123456",
+      "role": "customer"
+    }
+  ],
+  "product": [
+    {
+      "id": 1,
+      "name": "bimbim",
+      "price": 5000,
+      "quantity": 4
+    }
+  ],
+  "order": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "product_id": 1,
+      "quantity": 3
+    }
+  ]
+}

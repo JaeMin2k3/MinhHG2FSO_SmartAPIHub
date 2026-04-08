@@ -1,0 +1,7 @@
+# Các thư viện đã cài đặt (Rất nặng, không nên đẩy lên)
+node_modules/
+
+# Thư mục chứa code đã biên dịch (TypeScript sang JavaScript)
+dist/
+build/
+.env
