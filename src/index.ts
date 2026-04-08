@@ -1,25 +1,35 @@
-import express, { NextFunction } from 'express'
-import bodyParse from 'body-parser'
-import {Request, Response} from 'express'
+import express, { Request, Response, NextFunction } from 'express';
+import bodyParse from 'body-parser';
+import fs from 'fs';
+import path from 'path';
+import swaggerUi from 'swagger-ui-express';
+
 import { runMigration } from './db/migrate';
-import  {db} from './db/knex'
+import { db } from './db/knex';
+import dynamicRouter from './routes/dynamicRouter.route';
+import userRouter from './routes/userRouter.route';
+
 const app = express();
-app.use(bodyParse.json())
-app.use(express.urlencoded({ extended: true }));
 const port = 3000;
-import dynamicRouter from './routes/dynamicRouter.route'
-import userRouter from './routes/userRouter.route'
-app.use('/health', async (req: Request, res: Response, next: NextFunction)=>{
+
+app.use(bodyParse.json());
+app.use(express.urlencoded({ extended: true }));
+
+const swaggerFilePath = path.join(__dirname, 'swagger.json');
+const swaggerDocument = JSON.parse(fs.readFileSync(swaggerFilePath, 'utf8'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use('/health', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await db.raw('SELECT 1');
-    return res.status(200).json({message: "server is running"})
+    return res.status(200).json({ message: "server is running" });
   } catch (error) {
-    return res.status(5000).json({message: "Lỗi server"})
+    return res.status(500).json({ message: "Lỗi server" }); 
   }
-  
-})
+});
+
 app.use('/api', dynamicRouter);
-app.use('/auth', userRouter)
+app.use('/auth', userRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     console.error("[Global Error]:", err.message);
@@ -31,10 +41,12 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     });
 });
 
-async function Start(){
+async function Start() {
   await runMigration();
-  app.listen(port, ()=>{
-    console.log("server is running")
-  })
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Xem tài liệu API tại: http://localhost:${port}/api-docs`);
+  });
 }
+
 Start();

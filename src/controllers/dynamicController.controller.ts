@@ -3,12 +3,13 @@ import {getTableName} from '../utils/getTableName'
 import {db} from '../db/knex'
 import {handleExpand} from '../utils/handleExpand'
 import {handleEmbed} from '../utils/handleEmbed'
-// --- GET DYNAMIC (Lọc, Phân trang, Tìm kiếm) ---
+
 export async function getDynamic(req: Request, res: Response, next: NextFunction) {
     try {
         const tableName = getTableName(req.params.resource as string);
         let query = db(tableName);
-
+        console.log("=== KIỂM TRA REQUEST TỪ POSTMAN ===");
+        console.log("req.query:", req.query);
         // 1. Tách _expand và _embed ra khỏi req.query
         const { _fields, _page = '1', _limit = '10', _sort, _order = 'asc', q, _expand, _embed, ...filters } = req.query;
 
@@ -76,29 +77,29 @@ export async function getDynamic(req: Request, res: Response, next: NextFunction
     }
 }
 
-// --- POST DYNAMIC (Tạo mới) ---
+
 export async function createDynamic(req: Request, res: Response, next: NextFunction) {
     try {
         const tableName = getTableName(req.params.resource as string);
         const payload = req.body;
         
-        payload.created_at = new Date();
-        payload.updated_at = new Date();
+        payload.createdAt = new Date();
+        payload.updatedAt = new Date();
 
-        const [id] = await db(tableName).insert(payload);
-        return res.status(201).json({ message: "success", data: { id, ...payload } });
+        const [id] = await db(tableName).insert(payload).returning('id'); 
+        
+        return res.status(201).json({ message: "success", data: { id: typeof id === 'object' ? id.id : id, ...payload } });
     } catch (error) {
         next(error);
     }
 }
 
-// --- PATCH DYNAMIC (Cập nhật một phần) ---
 export async function updateDynamic(req: Request, res: Response, next: NextFunction) {
     try {
         const tableName = getTableName(req.params.resource as string);
         const payload = req.body;
         
-        payload.updated_at = new Date();
+        payload.updatedAt = new Date();
 
         const updatedRows = await db(tableName).where({ id: req.params.id }).update(payload);
         if (updatedRows === 0) return res.status(404).json({ message: "Không tìm thấy record" });
@@ -109,14 +110,13 @@ export async function updateDynamic(req: Request, res: Response, next: NextFunct
     }
 }
 
-// --- DELETE DYNAMIC ---
 export async function deleteDynamic(req: Request, res: Response, next: NextFunction) {
     try {
         const tableName = getTableName(req.params.resource as string);
         const deletedRows = await db(tableName).where({ id: req.params.id }).del();
         
         if (deletedRows === 0) return res.status(404).json({ message: "Không tìm thấy record" });
-        return res.status(204).send();
+        return res.status(200).json({message: "success"})
     } catch (error) {
         next(error);
     }

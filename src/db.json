@@ -1,27 +1,114 @@
 {
-  "user" : [
+  "users": [
     {
       "id": 1,
       "name": "minh",
-      "email": "minhhg@gmail.com",
-      "password":"123456",
+      "email": "minhtd2k3@gmail.com",
+      "password": "$2b$10$BZAb4jjRURpm7JxmWc6pNOHdwuHdZAbyx0AJBsWHgRTFny7/uUBIO",
+      "role": "customer"
+    },
+    {
+      "id": 2,
+      "name": "admin_system",
+      "email": "admin@gmail.com",
+      "password": "$2b$10$BZAb4jjRURpm7JxmWc6pNOHdwuHdZAbyx0AJBsWHgRTFny7/uUBIO",
+      "role": "admin"
+    },
+    {
+      "id": 3,
+      "name": "hoang_dev",
+      "email": "hoang.dev@gmail.com",
+      "password": "$2b$10$BZAb4jjRURpm7JxmWc6pNOHdwuHdZAbyx0AJBsWHgRTFny7/uUBIO",
+      "role": "customer"
+    },
+    {
+      "id": 4,
+      "name": "lan_anh",
+      "email": "lananh.designer@gmail.com",
+      "password": "$2b$10$BZAb4jjRURpm7JxmWc6pNOHdwuHdZAbyx0AJBsWHgRTFny7/uUBIO",
       "role": "customer"
     }
   ],
-  "product": [
+  "products": [
     {
       "id": 1,
       "name": "bimbim",
       "price": 5000,
-      "quantity": 4
+      "quantity": 100
+    },
+    {
+      "id": 2,
+      "name": "Tai nghe in-ear KZ EDX Pro",
+      "price": 150000,
+      "quantity": 25
+    },
+    {
+      "id": 3,
+      "name": "Vợt cầu lông Felet Aero Carbon Orange 2022",
+      "price": 1250000,
+      "quantity": 8
+    },
+    {
+      "id": 4,
+      "name": "Sách luyện nghe tiếng Anh thực tế",
+      "price": 180000,
+      "quantity": 40
+    },
+    {
+      "id": 5,
+      "name": "Bàn phím cơ Keychron K2",
+      "price": 1650000,
+      "quantity": 15
+    },
+    {
+      "id": 6,
+      "name": "Chuột không dây Logitech G304",
+      "price": 850000,
+      "quantity": 20
     }
   ],
-  "order": [
+  "orders": [
     {
       "id": 1,
       "user_id": 1,
       "product_id": 1,
       "quantity": 3
+    },
+    {
+      "id": 2,
+      "user_id": 1,
+      "product_id": 2,
+      "quantity": 1
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "product_id": 5,
+      "quantity": 1
+    },
+    {
+      "id": 4,
+      "user_id": 3,
+      "product_id": 6,
+      "quantity": 1
+    },
+    {
+      "id": 5,
+      "user_id": 4,
+      "product_id": 4,
+      "quantity": 2
+    },
+    {
+      "id": 6,
+      "user_id": 1,
+      "product_id": 3,
+      "quantity": 2
+    },
+    {
+      "id": 7,
+      "user_id": 4,
+      "product_id": 2,
+      "quantity": 1
     }
   ]
 }

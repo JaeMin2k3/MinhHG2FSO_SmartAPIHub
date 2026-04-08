@@ -4,11 +4,11 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 require('dotenv').config();
 export async function userLogin(req: Request, res: Response, next: NextFunction) {
-    const {gmail, password} = req.body;
-    if(!gmail || !password) return res.status(400).json({message: "vui lòng nhập đầy đủ password và email"})
-    const result  = await db('user')
+    const {email, password} = req.body;
+    if(!email || !password) return res.status(400).json({message: "vui lòng nhập đầy đủ password và email"})
+    const result  = await db('users')
                     .select('*')
-                    .where({email: gmail})
+                    .where({email: email})
                     .first();
     // check su ton tai cua gmail
     if(!result) return res.status(400).json({message: "login fail"});
@@ -35,7 +35,7 @@ export async function userLogin(req: Request, res: Response, next: NextFunction)
     try{
         const {email, name, password} = req.body;
         if(!email || !name || !password) return res.status(400).json({message: "vui long nhập đầy đủ thông tin cho tài khoản mới"})
-        const checkEmail =  await db('user').select('email').where({email: email}).first();
+        const checkEmail =  await db('users').select('email').where({email: email}).first();
         if(checkEmail) return res.status(409).json({message: "trung email"})
         const passwordHash = bcrypt.hashSync(password, 10);
         const newUser = {
@@ -44,7 +44,7 @@ export async function userLogin(req: Request, res: Response, next: NextFunction)
             password: passwordHash,
             role: "customer"
         }
-        const result = await trx('user').insert(newUser);
+        const result = await trx('users').insert(newUser);
         if(result){
             await trx.commit();
             return res.status(200).json({message: "success"})

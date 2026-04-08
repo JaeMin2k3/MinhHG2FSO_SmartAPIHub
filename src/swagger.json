@@ -1,0 +1,352 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Fresher",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+    
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "Đăng nhập",
+        "responses": {
+          "200": { "description": "Thành công" }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "gmail": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "email": "admin@gmail.com",
+                "password": "123456"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/SignUp": {
+      "post": {
+        "summary": "Đăng ký tài khoản",
+        "description": "Tạo tài khoản người dùng mới với role mặc định là customer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Họ và tên người dùng"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Địa chỉ email hợp lệ"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Mật khẩu"
+                  }
+                },
+                "required": ["name", "email", "password"]
+              },
+              "example": {
+                "name": "Nguyễn Văn A",
+                "email": "nguyenvana@gmail.com",
+                "password": "password123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Đăng ký thành công (success)"
+          },
+          "400": {
+            "description": "Thiếu thông tin (vui lòng nhập đầy đủ thông tin cho tài khoản mới)"
+          },
+          "409": {
+            "description": "Trùng email"
+          },
+          "500": {
+            "description": "Lỗi server không thể đăng kí được"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "summary": "Lấy danh sách sản phẩm",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công lấy dữ liệu"
+          },
+          "401": {
+            "description": "Chưa xác thực (Thiếu hoặc sai Token)"
+          },
+          "500": {
+            "description": "Lỗi server"
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "summary": "Lấy danh sách sản phẩm",
+        "description": "Lấy toàn bộ danh sách sản phẩm hoặc tìm kiếm sản phẩm theo từ khóa",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Từ khóa tìm kiếm (VD: bánh, màn hình...)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "chuột"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách thành công"
+          },
+          "401": {
+            "description": "Chưa xác thực (Thiếu hoặc sai Token)"
+          },
+          "500": {
+            "description": "Lỗi server nội bộ"
+          }
+        }
+      },
+      "post": {
+        "summary": "Thêm mới sản phẩm",
+        "description": "Tạo một sản phẩm mới vào cơ sở dữ liệu",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "price", "quantity"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Tên sản phẩm"
+                  },
+                  "price": {
+                    "type": "integer",
+                    "description": "Giá sản phẩm"
+                  },
+                  "quantity": {
+                    "type": "integer",
+                    "description": "Số lượng trong kho"
+                  }
+                }
+              },
+              "example": {
+                "name": "Màn hình Dell Ultrasharp 24 inch",
+                "price": 4500000,
+                "quantity": 10
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo sản phẩm thành công"
+          },
+          "400": {
+            "description": "Dữ liệu đầu vào không hợp lệ"
+          },
+          "401": {
+            "description": "Chưa xác thực (Thiếu hoặc sai Token)"
+          },
+          "403": {
+            "description": "Không có quyền thực hiện (Cần quyền Admin)"
+          },
+          "500": {
+            "description": "Lỗi server nội bộ"
+          }
+        }
+      }
+    },
+    "/api/orders": {
+      "get": {
+        "summary": "Lấy danh sách đơn hàng",
+        "description": "Lấy danh sách đơn hàng, hỗ trợ nối bảng (expand) sang bảng users",
+        "parameters": [
+          {
+            "name": "_expand",
+            "in": "query",
+            "required": false,
+            "description": "Tên bảng cần expand (Ví dụ: users)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "users"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": { "description": "Lấy dữ liệu thành công" },
+          "401": { "description": "Chưa xác thực (Thiếu hoặc sai Token)" },
+          "500": { "description": "Lỗi server nội bộ" }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "summary": "Lấy danh sách người dùng",
+        "description": "Lấy danh sách người dùng, hỗ trợ nhúng dữ liệu (embed) từ bảng orders",
+        "parameters": [
+          {
+            "name": "_embed",
+            "in": "query",
+            "required": false,
+            "description": "Tên bảng cần embed (Ví dụ: orders)",
+            "schema": {
+              "type": "string"
+            },
+            "example": "orders"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": { "description": "Lấy dữ liệu thành công" },
+          "401": { "description": "Chưa xác thực (Thiếu hoặc sai Token)" },
+          "500": { "description": "Lỗi server nội bộ" }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "patch": {
+        "summary": "Cập nhật một phần sản phẩm",
+        "description": "Sửa giá, số lượng hoặc tên của một sản phẩm theo ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID của sản phẩm cần cập nhật",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 3
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "type": "integer"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "price": 8500,
+                "quantity": 150
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Cập nhật thành công" },
+          "404": { "description": "Không tìm thấy record" },
+          "401": { "description": "Chưa xác thực" },
+          "403": { "description": "Không có quyền thực hiện (Cần Admin)" },
+          "500": { "description": "Lỗi server" }
+        }
+      },
+      "delete": {
+        "summary": "Xóa sản phẩm",
+        "description": "Xóa vĩnh viễn một sản phẩm khỏi database theo ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID của sản phẩm cần xóa",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 2
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": { "description": "Xóa thành công" },
+          "404": { "description": "Không tìm thấy record" },
+          "401": { "description": "Chưa xác thực" },
+          "403": { "description": "Không có quyền thực hiện (Cần Admin)" },
+          "500": { "description": "Lỗi server" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

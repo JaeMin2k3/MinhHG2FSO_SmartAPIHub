@@ -10,12 +10,11 @@ export const validate = (schema: z.ZodSchema) =>
         params: req.params,
       });
       return next();
-    } catch (error: unknown) { // Khai báo error là unknown
+    } catch (error: unknown) { 
       if (error instanceof ZodError) {
         return res.status(400).json({
           status: 'error',
           message: 'Dữ liệu không hợp lệ',
-          // Sử dụng error.issues thay vì error.errors
           details: error.issues.map(e => ({
             path: e.path[1] || e.path[0], 
             message: e.message

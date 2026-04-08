@@ -1,7 +1,7 @@
 export const ALLOWS_RESOURCE: Record<string, string> = {
-  users: 'user',
-  products: 'product',
-  orders: 'order'
+  users: 'users',
+  products: 'products',
+  orders: 'orders'
 }
 
 export type CustomJwtPayload = {
