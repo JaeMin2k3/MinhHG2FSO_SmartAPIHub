@@ -8,10 +8,10 @@ import { runMigration } from './db/migrate';
 import { db } from './db/knex';
 import dynamicRouter from './routes/dynamicRouter.route';
 import userRouter from './routes/userRouter.route';
-
+import cors from 'cors';
 const app = express();
 const port = 3000;
-
+app.use(cors());
 app.use(bodyParse.json());
 app.use(express.urlencoded({ extended: true }));
 
