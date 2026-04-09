@@ -1,26 +1,26 @@
 # Backend MiniProject API
 
-Du an Backend cung cap cac API phuc vu cho he thong, duoc xay dung bang Node.js (TypeScript) va co so du lieu PostgreSQL. Du an duoc tich hop san cau hinh Docker de de dang trien khai va Swagger de cung cap tai lieu API truc quan.
+Dự án Backend cung cấp các API phục vụ cho hệ thống, được xây dựng bằng Node.js (TypeScript) và cơ sở dữ liệu PostgreSQL. Dự án được tích hợp sẵn cấu hình Docker để dễ dàng triển khai và Swagger để cung cấp tài liệu API trực quan.
 
-## Cong nghe su dung
+## Công nghệ sử dụng
 
 - Runtime: Node.js (v22)
 - Framework: Express.js
-- Ngon ngu: TypeScript
-- Co so du lieu: PostgreSQL (v15)
+- Ngôn ngữ: TypeScript
+- Cơ sở dữ liệu: PostgreSQL (v15)
 - Query Builder: Knex.js (pg)
-- Tai lieu API: Swagger UI
-- Trien khai: Docker va Docker Compose
+- Tài liệu API: Swagger UI
+- Triển khai: Docker và Docker Compose
 
-## Yeu cau moi truong
+## Yêu cầu môi trường
 
-De khoi chay du an nay tren may tinh, vui long dam bao ban da cai dat:
-1. Node.js (Phien ban >= 18, khuyen nghi su dung v22)
+Để khởi chạy dự án này trên máy tính, vui lòng đảm bảo bạn đã cài đặt:
+1. Node.js (Phiên bản >= 18, khuyến nghị sử dụng v22)
 2. Docker Desktop
 
-## Cai dat bien moi truong
+## Cài đặt biến môi trường
 
-Tao mot file .env o thu muc goc cua du an (ngang hang voi file package.json) va dien cac thong tin sau:
+Tạo một file .env ở thư mục gốc của dự án (ngang hàng với file package.json) và điền các thông tin sau:
 
 DB_CLIENT=pg
 DB_HOST=127.0.0.1
@@ -28,64 +28,65 @@ DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=123456
 DB_NAME=postgres
+SECRET_KEY=JaeMin2k3
 
-Luu y quan trong: 
-Doi DB_HOST=db neu ban muon dong goi va chay toan bo he thong bang Docker (theo huong dan o Cach 2 ben duoi).
+Lưu ý quan trọng: 
+Đổi DB_HOST=db nếu bạn muốn đóng gói và chạy toàn bộ hệ thống bằng Docker (theo hướng dẫn ở Cách 2 bên dưới).
 
-## Huong dan khoi chay du an
+## Hướng dẫn khởi chạy dự án
 
-Ban co the khoi chay du an theo 2 cach phu thuoc vao muc dich su dung.
+Bạn có thể khởi chạy dự án theo 2 cách phụ thuộc vào mục đích sử dụng.
 
-### Cach 1: Chay moi truong Development (Khuyen dung khi viet code)
+### Cách 1: Chạy môi trường Development (Khuyên dùng khi viết code)
 
-Cach nay giup ban sua code den dau, server se tu dong cap nhat den do (thong qua nodemon) ma khong can phai build lai Docker.
+Cách này giúp bạn sửa code đến đâu, server sẽ tự động cập nhật đến đó (thông qua nodemon) mà không cần phải build lại Docker.
 
-1. Khoi dong rieng co so du lieu bang Docker:
+1. Khởi động riêng cơ sở dữ liệu bằng Docker:
 docker compose up -d db
 
-2. Cai dat cac thu vien can thiet:
+2. Cài đặt các thư viện cần thiết:
 npm install
 
-3. Khoi chay server Node.js:
+3. Khởi chạy server Node.js:
 npm start
 
-### Cach 2: Chay Full Docker (Dong goi hoan chinh)
+### Cách 2: Chạy Full Docker (Đóng gói hoàn chỉnh)
 
-Cach nay se dong ho toan bo code Node.js va Database vao ben trong moi truong mang noi bo cua Docker. Thich hop de trien khai len may chu.
+Cách này sẽ đóng gói toàn bộ code Node.js và Database vào bên trong môi trường mạng nội bộ của Docker. Thích hợp để triển khai lên máy chủ.
 
-1. Build image va khoi chay toan bo he thong:
+1. Build image và khởi chạy toàn bộ hệ thống:
 docker compose up -d --build
 
-2. Kiem tra log de dam bao server da chay khong co loi:
+2. Kiểm tra log để đảm bảo server đã chạy không có lỗi:
 docker compose logs -f app
 
-3. Lenh dung toan bo he thong:
+3. Lệnh dừng toàn bộ hệ thống:
 docker compose down
 
-## Tai lieu API (Swagger)
+## Tài liệu API (Swagger)
 
-Sau khi server khoi chay thanh cong, ban co the xem tai lieu chi tiet va kiem thu (test) truc tiep cac API thong qua giao dien UI cua Swagger tai duong dan:
+Sau khi server khởi chạy thành công, bạn có thể xem tài liệu chi tiết và kiểm thử (test) trực tiếp các API thông qua giao diện UI của Swagger tại đường dẫn:
 http://localhost:3000/api-docs
 
-## Danh sach cac API chinh
+## Danh sách các API chính
 
-1. Nhom API xac thuc (Khong yeu cau Token)
-- POST /auth/SignUp: Dang ky tai khoan moi (Quyen mac dinh la customer).
-- POST /auth/login: Dang nhap va nhan ma xac thuc (JWT Token).
+1. Nhóm API xác thực (Không yêu cầu Token)
+- POST /auth/SignUp: Đăng ký tài khoản mới (Quyền mặc định là customer).
+- POST /auth/login: Đăng nhập và nhận mã xác thực (JWT Token).
 
-2. Nhom API nghiep vu (Yeu cau Bearer Token)
-- GET /api/products: Lay danh sach san pham (Ho tro tim kiem theo query 'q').
-- POST /api/products: Them san pham moi (Yeu cau quyen Admin).
-- PATCH /api/products/{id}: Cap nhat mot phan thong tin san pham (gia, so luong).
-- DELETE /api/products/{id}: Xoa vinh vien san pham.
-- GET /api/orders: Lay danh sach don hang (Ho tro query '_expand=users').
-- GET /api/users: Lay danh sach nguoi dung (Ho tro query '_embed=orders').
+2. Nhóm API nghiệp vụ (Yêu cầu Bearer Token)
+- GET /api/products: Lấy danh sách sản phẩm (Hỗ trợ tìm kiếm theo query 'q').
+- POST /api/products: Thêm sản phẩm mới (Yêu cầu quyền Admin).
+- PATCH /api/products/{id}: Cập nhật một phần thông tin sản phẩm (giá, số lượng).
+- DELETE /api/products/{id}: Xóa vĩnh viễn sản phẩm.
+- GET /api/orders: Lấy danh sách đơn hàng (Hỗ trợ query '_expand=users').
+- GET /api/users: Lấy danh sách người dùng (Hỗ trợ query '_embed=orders').
 
-## Huong dan kiem thu (Test) API bang Swagger
+## Hướng dẫn kiểm thử (Test) API bằng Swagger
 
-1. Truy cap vao http://localhost:3000/api-docs.
-2. Tim mo API POST /auth/login, nhap email va password de dang nhap.
-3. Copy doan Token ma server tra ve (khong copy dau ngoac kep).
-4. Cuon len dau trang, bam vao nut Authorize.
-5. Dan doan Token vua copy vao o trong va bam xac nhan.
-6. Bay gio ban da co quyen de mo va kiem thu tat ca cac API con lai cua he thong.
+1. Truy cập vào http://localhost:3000/api-docs.
+2. Tìm mở API POST /auth/login, nhập email và password để đăng nhập.
+3. Copy đoạn Token mà server trả về (không copy dấu ngoặc kép).
+4. Cuộn lên đầu trang, bấm vào nút Authorize.
+5. Dán đoạn Token vừa copy vào ô trống và bấm xác nhận.
+6. Bây giờ bạn đã có quyền để mở và kiểm thử tất cả các API còn lại của hệ thống.
