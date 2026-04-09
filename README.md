@@ -67,8 +67,8 @@ docker compose down
 ## Tài liệu API (Swagger)
 
 Sau khi server khởi chạy thành công, bạn có thể xem tài liệu chi tiết và kiểm thử (test) trực tiếp các API thông qua giao diện UI của Swagger tại đường dẫn:
-http://localhost:3000/api-docs
-https://express-typescriptq.onrender.com/api-docs
+1. http://localhost:3000/api-docs
+2. https://express-typescriptq.onrender.com/api-docs
 
 ## Danh sách các API chính
 
