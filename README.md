@@ -1,3 +1,4 @@
+# Tác Giả: Hà Gia Minh
 # Backend MiniProject API
 
 Dự án Backend cung cấp các API phục vụ cho hệ thống, được xây dựng bằng Node.js (TypeScript) và cơ sở dữ liệu PostgreSQL. Dự án được tích hợp sẵn cấu hình Docker để dễ dàng triển khai và Swagger để cung cấp tài liệu API trực quan.
@@ -90,3 +91,6 @@ http://localhost:3000/api-docs
 4. Cuộn lên đầu trang, bấm vào nút Authorize.
 5. Dán đoạn Token vừa copy vào ô trống và bấm xác nhận.
 6. Bây giờ bạn đã có quyền để mở và kiểm thử tất cả các API còn lại của hệ thống.
+
+## Mermaid Architecture Diagram
+![Sơ đồ kiến trúc](architecture.png)

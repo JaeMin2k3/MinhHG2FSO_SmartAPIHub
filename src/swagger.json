@@ -3,13 +3,12 @@
   "info": {
     "title": "Fresher",
     "version": "1.0.0",
-    "description": ""
+    "description": "Tài liệu API cho dự án Backend MiniProject"
   },
   "servers": [
     {
       "url": "/"
     }
-    
   ],
   "paths": {
     "/auth/login": {
@@ -89,27 +88,6 @@
           },
           "500": {
             "description": "Lỗi server không thể đăng kí được"
-          }
-        }
-      }
-    },
-    "/api/products": {
-      "get": {
-        "summary": "Lấy danh sách sản phẩm",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Thành công lấy dữ liệu"
-          },
-          "401": {
-            "description": "Chưa xác thực (Thiếu hoặc sai Token)"
-          },
-          "500": {
-            "description": "Lỗi server"
           }
         }
       }
@@ -261,6 +239,62 @@
       }
     },
     "/api/products/{id}": {
+      "put": {
+        "summary": "Thay thế toàn bộ sản phẩm",
+        "description": "Cập nhật (thay thế) toàn bộ thông tin của một sản phẩm theo ID. Yêu cầu gửi đầy đủ các trường.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID của sản phẩm cần thay thế",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 3
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "price", "quantity"],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "integer"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "name": "Màn hình LG 27 inch (Mới)",
+                "price": 5500000,
+                "quantity": 20
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Thay thế thành công" },
+          "400": { "description": "Dữ liệu đầu vào không hợp lệ (Thiếu trường bắt buộc)" },
+          "404": { "description": "Không tìm thấy record" },
+          "401": { "description": "Chưa xác thực" },
+          "403": { "description": "Không có quyền thực hiện (Cần Admin)" },
+          "500": { "description": "Lỗi server" }
+        }
+      },
       "patch": {
         "summary": "Cập nhật một phần sản phẩm",
         "description": "Sửa giá, số lượng hoặc tên của một sản phẩm theo ID",

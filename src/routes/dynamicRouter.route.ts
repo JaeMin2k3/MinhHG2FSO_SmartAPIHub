@@ -8,5 +8,5 @@ Router.get('/:resource', isUser, getDynamic);
 Router.post('/:resource', isAdmin, createDynamic);
 Router.patch('/:resource/:id', isAdmin, updateDynamic);
 Router.delete('/:resource/:id',isAdmin, deleteDynamic);
-
+Router.put('/:resource/:id', isAdmin, replaceDynamic);
 export default Router;

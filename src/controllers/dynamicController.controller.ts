@@ -121,3 +121,26 @@ export async function deleteDynamic(req: Request, res: Response, next: NextFunct
         next(error);
     }
 }
+
+export async function replaceDynamic(req: Request, res: Response, next: NextFunction) {
+    try {
+        const tableName = getTableName(req.params.resource as string);
+        const payload = req.body;
+        
+        payload.updatedAt = new Date();
+
+        if (payload.id) {
+            delete payload.id;
+        }
+
+        const updatedRows = await db(tableName).where({ id: req.params.id }).update(payload);
+
+        if (updatedRows === 0) return res.status(404).json({ message: "Không tìm thấy record" });
+
+        const updatedData = await db(tableName).where({ id: req.params.id }).first();
+
+        return res.status(200).json({ message: "success", data: updatedData });
+    } catch (error) {
+        next(error);
+    }
+}
