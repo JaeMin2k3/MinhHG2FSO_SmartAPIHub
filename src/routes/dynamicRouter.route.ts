@@ -1,5 +1,5 @@
 import express from 'express';
-import { getDynamic, createDynamic, updateDynamic, deleteDynamic } from '../controllers/dynamicController.controller';
+import { getDynamic, createDynamic, updateDynamic, deleteDynamic,replaceDynamic } from '../controllers/dynamicController.controller';
 import isAdmin from '../middlewares/isAdmin';
 import isUser from '../middlewares/isUser'
 const Router = express.Router();
