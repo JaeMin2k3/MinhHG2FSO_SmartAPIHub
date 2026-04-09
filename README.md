@@ -91,3 +91,6 @@ https://express-typescriptq.onrender.com/api-docs
 4. Cuộn lên đầu trang, bấm vào nút Authorize.
 5. Dán đoạn Token vừa copy vào ô trống và bấm xác nhận.
 6. Bây giờ bạn đã có quyền để mở và kiểm thử tất cả các API còn lại của hệ thống.
+
+## Mermaid Architecture Diagram
+
