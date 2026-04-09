@@ -67,6 +67,7 @@ docker compose down
 
 Sau khi server khởi chạy thành công, bạn có thể xem tài liệu chi tiết và kiểm thử (test) trực tiếp các API thông qua giao diện UI của Swagger tại đường dẫn:
 http://localhost:3000/api-docs
+https://express-typescriptq.onrender.com/api-docs
 
 ## Danh sách các API chính
 
@@ -84,7 +85,7 @@ http://localhost:3000/api-docs
 
 ## Hướng dẫn kiểm thử (Test) API bằng Swagger
 
-1. Truy cập vào http://localhost:3000/api-docs.
+1. Truy cập vào http://localhost:3000/api-docs hoặc https://express-typescriptq.onrender.com/api-docs
 2. Tìm mở API POST /auth/login, nhập email và password để đăng nhập.
 3. Copy đoạn Token mà server trả về (không copy dấu ngoặc kép).
 4. Cuộn lên đầu trang, bấm vào nút Authorize.
