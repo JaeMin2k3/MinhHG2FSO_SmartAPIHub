@@ -66,9 +66,7 @@ docker compose down
 
 ## Tài liệu API (Swagger)
 
-Sau khi server khởi chạy thành công, bạn có thể xem tài liệu chi tiết và kiểm thử (test) trực tiếp các API thông qua giao diện UI của Swagger tại đường dẫn:
-1. http://localhost:3000/api-docs
-2. https://express-typescriptq.onrender.com/api-docs
+Sau khi server khởi chạy thành công, bạn có thể xem tài liệu chi tiết và kiểm thử (test) trực tiếp các API thông qua giao diện UI của Swagger tại đường dẫn: https://express-typescriptq.onrender.com/api-docs
 
 ## Danh sách các API chính
 
@@ -83,7 +81,8 @@ Sau khi server khởi chạy thành công, bạn có thể xem tài liệu chi t
 - DELETE /api/products/{id}: Xóa vĩnh viễn sản phẩm.
 - GET /api/orders: Lấy danh sách đơn hàng (Hỗ trợ query '_expand=users').
 - GET /api/users: Lấy danh sách người dùng (Hỗ trợ query '_embed=orders').
-
+3. Check server có hoạt động không
+- GET /health: kiểm tra trạng thái của server
 ## Hướng dẫn kiểm thử (Test) API bằng Swagger
 
 1. Truy cập vào http://localhost:3000/api-docs hoặc https://express-typescriptq.onrender.com/api-docs
