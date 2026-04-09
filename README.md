@@ -93,4 +93,103 @@ https://express-typescriptq.onrender.com/api-docs
 6. Bây giờ bạn đã có quyền để mở và kiểm thử tất cả các API còn lại của hệ thống.
 
 ## Mermaid Architecture Diagram
+graph TD
+    subgraph Client
+        Browser[Trình duyệt / Postman]
+    end
 
+    subgraph "API Docs"
+        Swagger[Swagger UI at '/api-docs']
+    end
+
+    subgraph "Express Server (app.ts)"
+        Start[Khởi động: `Start()`]
+        HealthCheck[Endpoint `/health`: DB Status]
+        RootRouter[Root Router '/']
+        GlobalErrorHandler[Global Error Handler]
+        
+        subgraph "Middlewares"
+            IsUser[MiddleWare: `isUser`]
+            IsAdmin[Middleware: `isAdmin`]
+            ValidateUser[Middleware: `validate` (Zod for Register/Login)]
+        end
+        
+        subgraph "Routing"
+            UserRouter[User Router '/auth']
+            DynamicRouter[Dynamic Router '/api']
+        end
+    end
+
+    subgraph "Controllers"
+        subgraph "UserController"
+            userLogin[userLogin: Cấp token JWT]
+            userSignUp[userSignUp: Tạo mới, hash password]
+        end
+        
+        subgraph "DynamicController"
+            getDynamic[getDynamic: CRUD & Query]
+            createDynamic[createDynamic: Tạo mới]
+            updateDynamic[updateDynamic: Cập nhật (PATCH)]
+            deleteDynamic[deleteDynamic: Xóa vĩnh viễn]
+        end
+    end
+
+    subgraph "Database Logic & Utils"
+        db/knex[Knex.js DB Client]
+        getTableName[Util: `getTableName`]
+        handleEmbed[Util: `handleEmbed` (Embed Relations)]
+        handleExpand[Util: `handleExpand` (Expand Relations)]
+    end
+
+    subgraph "Database"
+        PostgreSQL[PostgreSQL Database]
+    end
+
+    %% Flow: Startup
+    Start -.-> runMigration[runMigration: Auto-Migration]
+    runMigration -.-> PostgreSQL
+
+    %% Flow: Request
+    Browser -->|Gửi request| ExpressServer
+    ExpressServer --> HealthCheck
+    ExpressServer --> Swagger
+    ExpressServer --> RootRouter
+
+    %% Routing Flow
+    RootRouter --> UserRouter
+    RootRouter --> DynamicRouter
+
+    %% Middleware Applied
+    DynamicRouter -->|Apply `isUser`| DynamicRouterRoutes
+    DynamicRouter -->|Apply `isAdmin` (POST/PATCH/DELETE)| DynamicRouterRoutes
+    UserRouter -->|Apply `validate` (Zod)| userLoginRoutes
+
+    %% Route mapping to Controllers
+    DynamicRouterRoutes --> getDynamic
+    DynamicRouterRoutes --> createDynamic
+    DynamicRouterRoutes --> updateDynamic
+    DynamicRouterRoutes --> deleteDynamic
+
+    userLoginRoutes --> userLogin
+    userLoginRoutes --> userSignUp
+
+    %% Controller logic flow
+    createDynamic -.-> PostgreSQL
+    updateDynamic -.-> PostgreSQL
+    deleteDynamic -.-> PostgreSQL
+
+    getDynamic -.-> db/knex
+    getDynamic -.-> PostgreSQL
+    getDynamic -.-> handleEmbed
+    getDynamic -.-> handleExpand
+
+    %% Controllers depend on DB Client & Utils
+    UserController -.-> db/knex
+    DynamicController -.-> db/knex
+    DynamicController -.-> getTableName
+
+    %% Database interactions
+    db/knex --> PostgreSQL
+
+    %% Error flow
+    ExpressServer --> GlobalErrorHandler
