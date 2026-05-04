@@ -38,7 +38,7 @@
       }
     }
   }
-}
+},
     "/auth/login": {
       "post": {
         "summary": "Đăng nhập",
