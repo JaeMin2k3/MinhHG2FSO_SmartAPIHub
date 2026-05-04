@@ -11,6 +11,34 @@
     }
   ],
   "paths": {
+    "/health": {
+  "get": {
+    "summary": "Kiểm tra sức khỏe server",
+    "description": "Kiểm tra server có đang hoạt động và kết nối được với database không",
+    "responses": {
+      "200": {
+        "description": "Server đang hoạt động bình thường",
+        "content": {
+          "application/json": {
+            "example": {
+              "message": "server is running"
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Lỗi server hoặc không kết nối được DB",
+        "content": {
+          "application/json": {
+            "example": {
+              "message": "Lỗi server"
+            }
+          }
+        }
+      }
+    }
+  }
+}
     "/auth/login": {
       "post": {
         "summary": "Đăng nhập",
