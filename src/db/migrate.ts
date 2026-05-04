@@ -34,17 +34,32 @@ export async function runMigration() {
       });
       console.log(`[Migrate] Đã tạo bảng: ${tableName}`);
     } else {
-      const hasCreatedAt = await db.schema.hasColumn(tableName, "createdAt");
-      const hasUpdatedAt = await db.schema.hasColumn(tableName, "updatedAt");
-
-      if (!hasCreatedAt || !hasUpdatedAt) {
-        await db.schema.alterTable(tableName, (table) => {
-          if (!hasCreatedAt) table.timestamp("createdAt").defaultTo(db.fn.now());
-          if (!hasUpdatedAt) table.timestamp("updatedAt").defaultTo(db.fn.now());
-        });
-        console.log(`[Migrate] Đã cập nhật cột timestamps cho bảng: ${tableName}`);
+  await db.schema.alterTable(tableName, async (table) => {
+    for (const [col, val] of Object.entries(sample)) {
+      if (col === "id") continue;
+      
+      // Kiểm tra xem cột này đã có trong DB chưa
+      const hasColumn = await db.schema.hasColumn(tableName, col);
+      if (!hasColumn) {
+        // Nếu chưa có thì thêm vào (logic giống phần Create)
+        if (typeof val === "string" && col !== "createdAt" && col !== "updatedAt") {
+          table.string(col);
+        } else if (typeof val === "number") {
+          table.integer(col);
+        } else if (typeof val === "boolean") {
+          table.boolean(col);
+        }
+        console.log(`[Migrate] Đã bổ sung cột mới: ${col} cho bảng: ${tableName}`);
       }
     }
+    
+    // Giữ nguyên phần check timestamps của bạn
+    const hasCreatedAt = await db.schema.hasColumn(tableName, "createdAt");
+    const hasUpdatedAt = await db.schema.hasColumn(tableName, "updatedAt");
+    if (!hasCreatedAt) table.timestamp("createdAt").defaultTo(db.fn.now());
+    if (!hasUpdatedAt) table.timestamp("updatedAt").defaultTo(db.fn.now());
+  });
+}
 
     const result = await db(tableName).count("* as count").first() as { count: string | number };
     const recordCount = Number(result?.count || 0);
