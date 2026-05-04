@@ -32,10 +32,24 @@ export async function getDynamic(req: Request, res: Response, next: NextFunction
         }
 
         // 4. Search (q) - Tìm kiếm text
+        // Thay đoạn search cũ bằng:
         if (q && typeof q === 'string') {
-            query.where((builder) => {
-                builder.orWhere('name', 'like', `%${q}%`); 
-            });
+            const columnInfo = await db(tableName).columnInfo();
+            const textColumns = Object.entries(columnInfo)
+                .filter(([_, info]) => 
+                    info.type === 'character varying' || 
+                    info.type === 'text' ||
+                    info.type === 'varchar'
+                )
+                .map(([col]) => col);
+
+            if (textColumns.length > 0) {
+                query.where((builder) => {
+                    for (const col of textColumns) {
+                        builder.orWhere(col, 'ilike', `%${q}%`); // dùng ilike cho case-insensitive
+                    }
+                });
+            }
         }
 
         // 5. Sorting
@@ -126,19 +140,25 @@ export async function replaceDynamic(req: Request, res: Response, next: NextFunc
     try {
         const tableName = getTableName(req.params.resource as string);
         const payload = req.body;
-        
-        payload.updatedAt = new Date();
 
-        if (payload.id) {
-            delete payload.id;
+        if (payload.id) delete payload.id;
+
+        // Lấy tất cả cột của bảng
+        const columnInfo = await db(tableName).columnInfo();
+        const allColumns = Object.keys(columnInfo).filter(c => c !== 'id' && c !== 'createdAt');
+
+        // Set null cho các cột không có trong payload (đúng chuẩn PUT)
+        const replaceData: any = {};
+        for (const col of allColumns) {
+            replaceData[col] = payload[col] ?? null;
         }
+        replaceData.updatedAt = new Date();
 
-        const updatedRows = await db(tableName).where({ id: req.params.id }).update(payload);
+        const updatedRows = await db(tableName).where({ id: req.params.id }).update(replaceData);
 
         if (updatedRows === 0) return res.status(404).json({ message: "Không tìm thấy record" });
 
         const updatedData = await db(tableName).where({ id: req.params.id }).first();
-
         return res.status(200).json({ message: "success", data: updatedData });
     } catch (error) {
         next(error);
